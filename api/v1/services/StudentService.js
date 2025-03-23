@@ -67,5 +67,30 @@ const deletestudent=async(id)=>{
         };
     }
 }
+const searchstudent = async (name) => {
+    try {
 
-export { getallstudents, createstudent ,updatestudent,deletestudent};
+        const query = 'SELECT * FROM students WHERE name ILIKE $1';
+        const result = await pool.query(query, [`%${name}%`]);
+
+        if (result.rows.length === 0) {
+            return {
+                success: false,
+                message: 'No student found with this name'
+            };
+        }
+
+        return {
+            success: true,
+            data: result.rows
+        };
+    } catch (err) {
+        console.log('Error in searchstudent function:', err.message);
+        return {
+            success: false,
+            message: 'Error searching for student'
+        };
+    }
+};
+
+export { getallstudents, createstudent ,updatestudent,deletestudent,searchstudent};

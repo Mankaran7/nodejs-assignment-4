@@ -1,5 +1,5 @@
 import express from 'express';
-import { getallstudents, createstudent,updatestudent,deletestudent} from '../services/StudentService.js';
+import { getallstudents, createstudent,updatestudent,deletestudent,searchstudent} from '../services/StudentService.js';
 
 const router = express.Router();
 
@@ -57,5 +57,21 @@ router.delete('/deletestudent/:id',async(req,res)=>{
         return res.status(400).send({ message: err.message || '' });
     }
 })
+router.get('/search/:name', async (req, res) => {
+    try {
+      
+        const name = req.params.name.trim();
 
+        const response = await searchstudent(name);
+
+        if (response.success) {
+            return res.status(200).send({ data: response.data });
+        } else {
+            return res.status(404).send({ message: response.message });
+        }
+    } catch (err) {
+        console.log('Error in search controller:', err);
+        return res.status(500).send({ message: 'Internal server error' });
+    }
+});
 export default router;
